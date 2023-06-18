@@ -15,7 +15,7 @@ const message = document.querySelector(".message");
 // play again button
 const playAgainBtn = document.querySelector(".play-again");
 
-const guessedLetters = [];
+let guessedLetters = [];
 let numberOfGuesses = 8;
 
 // get some words!
@@ -65,7 +65,7 @@ const validateInput = function(userGuess) {
 
 const makeGuess = function(guess) {
     guess = guess.toUpperCase();
-    if (guessedLetters.includes(guess)) {
+    if (guessedLetters.includes(guess) ) {
         message.innerText = "You already guessed that letter. Try again!"
     } else {
         guessedLetters.push(guess);
@@ -105,6 +105,7 @@ const winOrLoose = function() {
     if (word.toUpperCase() === unknownWord.innerText) {
         message.classList.add("win");
         message.innerHTML = `<p class="highlight">You guessed the correct word! Congrats!</p>`;
+        startOver();
     }
 };
 
@@ -119,10 +120,35 @@ const countGuesses = function(guess) {
     }
 
     if (numberOfGuesses === 0) {
-        message.innerHTML = `Game over! The word was <span class="highlight">${word}</span>.`
+        message.innerHTML = `Game over! The word was <span class="highlight">${word}</span>.`;
+        startOver();
     } else if (numberOfGuesses === 1){
         remainingSpan.innerText = `${numberOfGuesses} guess`;
     } else {
         remainingSpan.innerText = `${numberOfGuesses} guesses`;
     }
 };
+
+const startOver = function() {
+    guessBtn.classList.add("hide");
+    remainingGuesses.classList.add("hide");
+    listOfLetters.classList.add("hide");
+    playAgainBtn.classList.remove("hide");
+};
+
+playAgainBtn.addEventListener("click", function() {
+    message.classList.remove("win");
+    message.innerText = "";
+    numberOfGuesses = 8;
+    remainingSpan.innerText = `${numberOfGuesses} guesses`;
+    remainingGuesses.innerHTML = "";
+    guessedLetters = [];
+    listOfLetters.innerText = "";
+    
+    getWord()
+    
+    playAgainBtn.classList.add("hide");
+    guessBtn.classList.remove("hide");
+    remainingGuesses.classList.remove("hide");
+    listOfLetters.classList.remove("hide");
+});
