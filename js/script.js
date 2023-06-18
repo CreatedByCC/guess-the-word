@@ -15,8 +15,19 @@ const message = document.querySelector(".message");
 // play again button
 const playAgainBtn = document.querySelector(".play-again");
 
-const word = "magnolia";
 const guessedLetters = [];
+let numberOfGuesses = 8;
+
+// get some words!
+const getWord = async function() {
+    const response = await fetch(`https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt`);
+    const words = await response.text();
+    const wordsArray = words.split("\n");
+    const randomWord = Math.floor(Math.random() * wordsArray.length);
+    word = wordsArray[randomWord].trim();
+    hideLetters(word);
+};
+getWord();
 
 // replace each letter with a dot
 function hideLetters (word) {
@@ -26,8 +37,6 @@ function hideLetters (word) {
     }
     unknownWord.innerText = placeholders.join("");
 };
-
-hideLetters(word);
 
 guessBtn.addEventListener("click", function(e) {
     e.preventDefault();     // prevents the page from reloading
@@ -57,9 +66,10 @@ const validateInput = function(userGuess) {
 const makeGuess = function(guess) {
     guess = guess.toUpperCase();
     if (guessedLetters.includes(guess)) {
-        message.innerText = "You alread guessed that letter. Try again!"
+        message.innerText = "You already guessed that letter. Try again!"
     } else {
         guessedLetters.push(guess);
+        countGuesses(guess);
         showGuessedLetters();
         updateUnknownWord(guessedLetters);
     }
@@ -95,5 +105,24 @@ const winOrLoose = function() {
     if (word.toUpperCase() === unknownWord.innerText) {
         message.classList.add("win");
         message.innerHTML = `<p class="highlight">You guessed the correct word! Congrats!</p>`;
+    }
+};
+
+// count the remaining guesses
+const countGuesses = function(guess) {
+    const wordUpper = word.toUpperCase();
+    if (wordUpper.includes(guess)) {
+        message.innerText = `Good guess! The word has the letter ${guess}.`;
+    } else {
+        message.innerText = `Oops! Seems there is no ${guess} in this word.`;
+        numberOfGuesses -= 1;
+    }
+
+    if (numberOfGuesses === 0) {
+        message.innerHTML = `Game over! The word was <span class="highlight">${word}</span>.`
+    } else if (numberOfGuesses === 1){
+        remainingSpan.innerText = `${numberOfGuesses} guess`;
+    } else {
+        remainingSpan.innerText = `${numberOfGuesses} guesses`;
     }
 };
