@@ -145,7 +145,7 @@ playAgainBtn.addEventListener("click", function() {
     guessedLetters = [];
     listOfLetters.innerText = "";
     
-    getWord()
+    getWord();
     
     playAgainBtn.classList.add("hide");
     guessBtn.classList.remove("hide");
