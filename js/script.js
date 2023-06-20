@@ -45,7 +45,7 @@ guessBtn.addEventListener("click", function(e) {
     const guess = validateInput(userGuess);
     makeGuess(guess);
     input.value = "";
-    
+    input.focus();
 });
 
 // check user input
